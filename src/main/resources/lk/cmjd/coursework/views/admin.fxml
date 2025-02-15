@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane stylesheets="@../styles/dashboard.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.cmjd.coursework.controller.AdminController">
+
+    <!-- Left Sidebar -->
+    <left>
+        <VBox prefWidth="200" styleClass="sidebar">
+            <Button onAction="#switchForm" styleClass="menu-btn" text="Home" userData="home" />
+            <Button onAction="#switchForm" styleClass="menu-btn" text="Courses" userData="courses" />
+            <Button onAction="#switchForm" styleClass="menu-btn" text="Students" userData="students" />
+        </VBox>
+    </left>
+
+    <!-- Main Content Area -->
+    <center>
+        <StackPane fx:id="contentArea">
+
+            <!-- Home Section -->
+            <AnchorPane fx:id="homePane" styleClass="content-area" visible="false">
+                <HBox layoutX="20" layoutY="20" spacing="20">
+                    <!-- Courses Card -->
+                    <AnchorPane styleClass="card">
+                        <Label styleClass="card-title" text="Total Courses" />
+                        <Label fx:id="courseCount" layoutX="50" layoutY="40" styleClass="card-count" text="0" />
+                    </AnchorPane>
+
+                    <!-- Students Card -->
+                    <AnchorPane styleClass="card">
+                        <Label styleClass="card-title" text="Total Students" />
+                        <Label fx:id="studentCount" layoutX="50" layoutY="40" styleClass="card-count" text="0" />
+                    </AnchorPane>
+
+                    <!-- Total Card -->
+                    <AnchorPane styleClass="card">
+                        <Label styleClass="card-title" text="Total Users" />
+                        <Label fx:id="totalCount" layoutX="50" layoutY="40" styleClass="card-count" text="0" />
+                    </AnchorPane>
+                </HBox>
+            </AnchorPane>
+
+            <!-- Courses Section -->
+            <AnchorPane fx:id="coursesPane" styleClass="content-area">
+                <VBox layoutX="20" layoutY="20" spacing="10">
+                    <Label styleClass="section-title" text="Course Management" />
+
+                    <!-- Course Form -->
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="Course ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="courseId" prefHeight="23.0" prefWidth="401.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <Label text="Course Title:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="courseTitle" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <Label text="Credit Hours:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <TextField fx:id="creditHours" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <Label text="Department:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="department" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <Label text="PreRequists:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <ComboBox fx:id="PreRequists" prefHeight="23.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                        <Label text="Maximum capacity" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                        <TextField fx:id="max_capacity" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                        <Label text="Description" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                        <TextArea fx:id="courseDescription" prefHeight="78.0" prefWidth="487.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                            <Button onAction="#addCourse" styleClass="add-btn" text="Add" />
+                            <Button onAction="#updateCourse" styleClass="update-btn" text="Update" />
+                            <Button onAction="#deleteCourse" styleClass="delete-btn" text="Delete" />
+                        </HBox>
+                        <columnConstraints>
+                            <ColumnConstraints />
+                            <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                        </rowConstraints>
+                    </GridPane>
+
+                    <!-- Courses Table -->
+                    <TableView fx:id="coursesTable" prefHeight="200">
+                        <columns>
+                            <TableColumn fx:id="course_id_col" prefWidth="100" text="Course ID" />
+                            <TableColumn fx:id="course_title_col" prefWidth="100" text="Course Title" />
+                            <TableColumn fx:id="course_credit_hours_col" prefWidth="100" text="Credit Hours" />
+                            <TableColumn fx:id="course_department_col" prefWidth="148.79998779296875" text="Department" />
+                            <TableColumn fx:id="course_prerequistes_col" prefWidth="124.79998779296875" text="PreRequisites" />
+                            <TableColumn fx:id="course_max_capacity_col" prefWidth="126.4000244140625" text="Maximum Capacity" />
+                            <TableColumn fx:id="course_description_col" prefWidth="126.4000244140625" text="description" />
+                        </columns>
+                    </TableView>
+                </VBox>
+            </AnchorPane>
+
+            <!-- Students Section -->
+            <AnchorPane fx:id="studentsPane" styleClass="content-area" visible="false">
+                <VBox layoutX="20" layoutY="20" spacing="10">
+                    <Label styleClass="section-title" text="Student Management" />
+
+                    <!-- Student Form -->
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="Student ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="studentId" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="studentName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <TextField fx:id="studentEmail" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <Label text="Program:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <TextField fx:id="studentProgram" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <Label text="Date Of Birth:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <DatePicker fx:id="studentdob" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                        <Label text="Year" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                        <TextField fx:id="studentyear" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                        <Label text="Contact Number" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                        <TextField fx:id="contactNumber" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                            <Button onAction="#addStudent" styleClass="add-btn" text="Add" />
+                            <Button onAction="#updateStudent" styleClass="update-btn" text="Update" />
+                            <Button styleClass="delete-btn" text="Delete" />
+                        </HBox>
+                        <columnConstraints>
+                            <ColumnConstraints />
+                            <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                        </rowConstraints>
+                    </GridPane>
+
+                    <!-- Students Table -->
+                    <TableView id="studentTable" fx:id="studentsTable" prefHeight="200">
+                        <columns>
+                            <TableColumn fx:id="student_id_col" prefWidth="100" text="Student ID" />
+                            <TableColumn fx:id="student_name_col" prefWidth="200" text="Name" />
+                            <TableColumn fx:id="student_program_col" prefWidth="150" text="Program" />
+                            <TableColumn fx:id="student_email_col" prefWidth="150" text="Email" />
+                            <TableColumn fx:id="student_contact_col" prefWidth="150" text="Contact number" />
+                            <TableColumn fx:id="student_dob_col" prefWidth="150" text="D.O.B" />
+                            <TableColumn fx:id="student_year_col" prefWidth="150" text="Year" />
+                        </columns>
+                    </TableView>
+                </VBox>
+            </AnchorPane>
+        </StackPane>
+    </center>
+
+
+</BorderPane>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="lk.cmjd.coursework.controller.CardViewController" spacing="10"
+      styleClass="root" stylesheets="@../styles/style.css">
+
+    <!-- Search Bar -->
+    <TextField fx:id="searchField" promptText="Search..." styleClass="search-field"/>
+
+    <!-- Scrollable Card Container -->
+    <ScrollPane fitToWidth="true">
+        <!-- Fixed padding using commas -->
+        <TilePane fx:id="cardContainer"
+                  hgap="10" vgap="10"
+                  prefColumns="3" prefTileWidth="200"/>
+    </ScrollPane>
+</VBox>
