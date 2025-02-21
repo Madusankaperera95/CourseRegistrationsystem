@@ -15,4 +15,6 @@ public interface StudentService extends SuperService {
     String update(StudentDto studentDto) throws Exception;
 
     StudentDto getStudent(String email);
+
+    ArrayList<StudentDto> searchStudentByIdOrEmail(String value);
 }

@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StudentserviceImpl implements StudentService {
     private UserDao userDao = (UserDao)  DaoFactory.getInstance().getDao(DaoFactory.DaoTypes.USER);
@@ -44,23 +45,11 @@ public class StudentserviceImpl implements StudentService {
     @Override
     public ArrayList<StudentDto> getAll() throws Exception {
         ArrayList<StudentEntity> studentEntities = studentDao.getAll();
-        ArrayList<StudentDto> students = new ArrayList<>();
-
-        for(StudentEntity student : studentEntities)
-        {
-            students.add(new StudentDto(student.getStudentId(),student.getStudentName(),student.getProgram(),student.getStudentemail(),student.getStudentDob(),student.getYear(),student.getContactNumber()));
-        }
-
-        return students;
+        return getStudentDtos(studentEntities);
     }
 
     @Override
     public String update(StudentDto studentDto) throws Exception {
-//        var StudentEntity = studentDao.getStudent(studentDto.getStudentId());
-//        String Useroutput = userDao.Update(new UserEntity(StudentEntity.getUser().getUserId(),studentDto.getStudentName(),studentDto.getEmail(),StudentEntity.getUser().getPassword(),StudentEntity.getUser().getRole()));
-//        String studentOutPut = studentDao.Update(new StudentEntity(studentDto.getStudentId(),studentDto.getStudentName(),studentDto.getEmail(),studentDto.getDob(),studentDto.getProgram(),studentDto.getYear(),studentDto.getContactNumber(),StudentEntity.getUser()));
-//        System.out.println(StudentEntity.getUser().toString());
-//        return "ok";
 
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
@@ -119,6 +108,39 @@ public class StudentserviceImpl implements StudentService {
         } finally {
             session.close();
         }
+    }
+
+    @Override
+    public ArrayList<StudentDto> searchStudentByIdOrEmail(String value) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+
+            // Fetch the student using the current session
+            List<StudentEntity> studentEntities = studentDao.searchStudentByIdOrEmail(value,session);
+            return getStudentDtos(studentEntities);
+
+
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error in student retreival");
+            e.printStackTrace();
+            return null;
+        } finally {
+            session.close();
+        }
+    }
+
+    private ArrayList<StudentDto> getStudentDtos(List<StudentEntity> studentEntities) {
+        ArrayList<StudentDto> students = new ArrayList<>();
+        for(StudentEntity studentEntity : studentEntities){
+            students.add(new StudentDto(studentEntity.getStudentId(),studentEntity.getStudentName(),studentEntity.getProgram(),studentEntity.getStudentemail(),studentEntity.getStudentDob(),studentEntity.getYear(),studentEntity.getContactNumber()));
+        }
+
+        return students;
     }
 
 

@@ -1,11 +1,15 @@
 package lk.cmjd.coursework.controller;
 
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -17,12 +21,12 @@ import lk.cmjd.coursework.dto.StudentDto;
 import lk.cmjd.coursework.service.ServiceFactory;
 import lk.cmjd.coursework.service.custom.CourseService;
 import lk.cmjd.coursework.service.custom.EnrollmentService;
-import lk.cmjd.coursework.service.custom.StudentService;
 import lk.cmjd.coursework.util.Enums.SemesterTypes;
 import lk.cmjd.coursework.util.Enums.Status;
+import lk.cmjd.coursework.util.WordsConverter;
 
 import java.net.URL;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -65,7 +69,31 @@ public class StudentController implements Initializable {
     public TextArea courseDescriptionLbl;
 
     @FXML
-    public ComboBox<SemesterTypes> semester;
+    public ComboBox<String> semester;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> enrollment_id_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> enroll_course_name_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> semester_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> status_type_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> gpa_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> grade_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,Void> action_col;
+
+    @FXML
+    public TableView<EnrollmentDto> enrollTable;
 
 
     private final SemesterTypes[] semesterTypes = SemesterTypes.values();
@@ -94,13 +122,26 @@ public class StudentController implements Initializable {
         homePane.setVisible(userData.equals("allcourses"));
         EnrollmentsPane.setVisible(userData.equals("Enrollments"));
         academicRecordsPane.setVisible(userData.equals("AcademmicRecords"));
+        if(userData.equals("Enrollments")){
+            displayOrRefreshEnrollmentTable();
+        }
     }
 
     @FXML
     void registerForCourse(ActionEvent event) throws Exception {
         System.out.println(courseId.getText());
         System.out.println(semester.getValue());
-        String Output= enrollmentService.save(new EnrollmentDto(courseId.getText(),semester.getValue(), Status.ONGOING, getStudentObj().getStudentId()));
+
+        SemesterTypes semesterType = null;
+        if(semester.getValue().equals("First Semester")){
+             semesterType = SemesterTypes.FIRSTSEMESTER;
+        }
+
+        if(semester.getValue().equals("Second Semester")){
+            semesterType = SemesterTypes.SECONDSEMESTER;
+        }
+
+        String Output= enrollmentService.save(new EnrollmentDto(courseId.getText(),semesterType, Status.ONGOING, getStudentObj().getStudentId(),0,""));
         if(!Output.equals("ok")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Course Registration Error");
@@ -115,9 +156,36 @@ public class StudentController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         createCards();
-        semester.setItems(FXCollections.observableArrayList(semesterTypes));
+        String semesters[] = new String[semesterTypes.length];
+        for(int i = 0; i< semesters.length;i++){
+            semesters[i] = getRealValue(semesterTypes[i]);
+        }
+
+        semester.setItems(FXCollections.observableArrayList(semesters));
         // Add search listener
         searchField.textProperty().addListener((obs, oldVal, newVal) -> filterCards(newVal));
+
+        Platform.runLater(() -> {
+            if (EnrollmentsPane.isVisible()) {
+
+            }
+        });
+
+    }
+
+    private String getRealValue(SemesterTypes val) {
+        if (val == null) {
+            return "Unknown"; // Handle null case safely
+        }
+
+        switch (val) {
+            case FIRSTSEMESTER:
+                return "First Semester";
+            case SECONDSEMESTER:
+                return "Second Semester";
+            default:
+                return val.name(); // Return the enum name if no match
+        }
     }
 
     private void createCards() {
@@ -169,5 +237,77 @@ public class StudentController implements Initializable {
         }
     }
 
+    private void displayOrRefreshEnrollmentTable() {
+        enrollment_id_col.setCellValueFactory(new PropertyValueFactory<>("enrollId"));
+        enroll_course_name_col.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+        semester_col.setCellValueFactory(cellData -> {
+            String semester = String.valueOf(cellData.getValue().getSemester());
+            return new SimpleStringProperty(WordsConverter.getRealValue(semester));
+        });
+        gpa_col.setCellValueFactory(new PropertyValueFactory<>("gpa"));
+        grade_col.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        status_type_col.setCellValueFactory(cellData -> {
+            String semester = String.valueOf(cellData.getValue().getStatus());
+            return new SimpleStringProperty(WordsConverter.getRealValue(semester));
+        });
+
+        action_col.setCellFactory(param -> new TableCell<EnrollmentDto, Void>() {
+            private final Button dropCourseBtn = new Button("Drop Course");
+
+            {
+                dropCourseBtn.setStyle("-fx-background-color: #9f0f0f; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-padding: 5px 10px; ");
+
+                dropCourseBtn.setOnAction(event -> {
+                    EnrollmentDto enrollment = getTableView().getItems().get(getIndex());
+                    dropCourse(enrollment);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(dropCourseBtn);
+                }
+            }
+        });
+
+
+        try {
+            enrollTable.setItems(getStudentEnrollmentList());
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    private ObservableList<EnrollmentDto> getStudentEnrollmentList() throws Exception {
+        ObservableList<EnrollmentDto> enrollments = FXCollections.observableArrayList();
+        System.out.println(getStudentObj().toString());
+        ArrayList<EnrollmentDto> enrollmentDtos = enrollmentService.getEnrollmentsByStudentId(getStudentObj().getStudentId());
+        for(EnrollmentDto enrollmentDto : enrollmentDtos){
+            enrollments.add(enrollmentDto);
+        }
+
+        return enrollments;
+    }
+
+    private void dropCourse(EnrollmentDto enrollment) {
+        String resp = enrollmentService.deleteEnrollment(Integer.parseInt(enrollment.getEnrollId()));
+        displayOrRefreshEnrollmentTable();
+
+    }
+
 
 }
+
+

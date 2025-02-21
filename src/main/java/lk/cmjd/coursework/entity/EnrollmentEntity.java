@@ -15,7 +15,7 @@ public class EnrollmentEntity {
 
     @ManyToOne
     @JoinColumn(name="course_id",nullable = false)
-    private CourseEntity courseId;
+    private CourseEntity course;
 
     @Column(name = "semester_type", columnDefinition = "VARCHAR(200)")
     @Enumerated(EnumType.STRING)
@@ -38,9 +38,9 @@ public class EnrollmentEntity {
     public EnrollmentEntity() {
     }
 
-    public EnrollmentEntity(int enrollId, CourseEntity courseId, SemesterTypes semesterType, Status status, StudentEntity studentEntity, double gpa, String grade) {
+    public EnrollmentEntity(int enrollId, CourseEntity course, SemesterTypes semesterType, Status status, StudentEntity studentEntity, double gpa, String grade) {
         this.enrollId = enrollId;
-        this.courseId = courseId;
+        this.course = course;
         this.semesterType = semesterType;
         this.status = status;
         this.studentEntity = studentEntity;
@@ -48,16 +48,16 @@ public class EnrollmentEntity {
         this.grade = grade;
     }
 
-    public EnrollmentEntity(int enrollId, CourseEntity courseId, SemesterTypes semesterType, Status status, StudentEntity studentEntity) {
+    public EnrollmentEntity(int enrollId, CourseEntity course, SemesterTypes semesterType, Status status, StudentEntity studentEntity) {
         this.enrollId = enrollId;
-        this.courseId = courseId;
+        this.course = course;
         this.semesterType = semesterType;
         this.status = status;
         this.studentEntity = studentEntity;
     }
 
-    public EnrollmentEntity(CourseEntity courseId, SemesterTypes semesterType, Status status, StudentEntity studentEntity) {
-        this.courseId = courseId;
+    public EnrollmentEntity(CourseEntity course, SemesterTypes semesterType, Status status, StudentEntity studentEntity) {
+        this.course = course;
         this.semesterType = semesterType;
         this.status = status;
         this.studentEntity = studentEntity;
@@ -71,12 +71,12 @@ public class EnrollmentEntity {
         this.enrollId = enrollId;
     }
 
-    public CourseEntity getCourseId() {
-        return courseId;
+    public CourseEntity getCourse() {
+        return course;
     }
 
-    public void setCourseId(CourseEntity courseId) {
-        this.courseId = courseId;
+    public void setCourse(CourseEntity course) {
+        this.course = course;
     }
 
     public SemesterTypes getSemesterType() {
@@ -101,5 +101,21 @@ public class EnrollmentEntity {
 
     public void setStudentEntity(StudentEntity studentEntity) {
         this.studentEntity = studentEntity;
+    }
+
+    public double getGpa() {
+        return gpa;
+    }
+
+    public void setGpa(double gpa) {
+        this.gpa = gpa;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 }

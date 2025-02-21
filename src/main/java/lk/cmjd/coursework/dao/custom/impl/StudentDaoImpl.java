@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StudentDaoImpl implements StudentDao {
     @Override
@@ -71,6 +72,14 @@ public class StudentDaoImpl implements StudentDao {
             System.out.println("Error fetching student by email: " + e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public List<StudentEntity> searchStudentByIdOrEmail(String value, Session session) {
+        return  session.createQuery("FROM StudentEntity WHERE StudentId LIKE :studentId OR StudentName LIKE :studentName",StudentEntity.class)
+                .setParameter("studentId","%"+value+"%")
+                .setParameter("studentName","%"+value+"%")
+                .getResultList();
     }
 
 }

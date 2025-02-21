@@ -6,6 +6,7 @@ import lk.cmjd.coursework.entity.StudentEntity;
 import org.hibernate.Session;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface StudentDao extends SuperDao {
     String Save(StudentEntity student) throws Exception;
@@ -18,6 +19,6 @@ public interface StudentDao extends SuperDao {
 
     StudentEntity getStudentByEmail(String email,Session session);
 
-
+    List<StudentEntity> searchStudentByIdOrEmail(String value, Session session);
 
 }

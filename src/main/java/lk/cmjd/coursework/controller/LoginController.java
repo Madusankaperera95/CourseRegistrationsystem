@@ -62,7 +62,6 @@ public class LoginController {
             Parent root = loader.load();
 
             if (studentDto != null) {
-
                 StudentController studentController = loader.getController();
                 studentController.setStudentObj(studentDto);
             }

@@ -1,38 +1,35 @@
 package lk.cmjd.coursework.controller;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import lk.cmjd.coursework.dto.CourseDto;
-import lk.cmjd.coursework.dto.DepartmentDto;
-import lk.cmjd.coursework.dto.PreRequisiteDto;
-import lk.cmjd.coursework.dto.StudentDto;
+import lk.cmjd.coursework.dto.*;
 import lk.cmjd.coursework.service.ServiceFactory;
-import lk.cmjd.coursework.service.custom.CourseService;
-import lk.cmjd.coursework.service.custom.DepartmentService;
-import lk.cmjd.coursework.service.custom.PreRequisiteService;
-import lk.cmjd.coursework.service.custom.StudentService;
+import lk.cmjd.coursework.service.custom.*;
+import lk.cmjd.coursework.util.WordsConverter;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class AdminController {
 
 
     private CourseService courseService = (CourseService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.COURSE);
+
     private DepartmentService departmentService = (DepartmentService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.DEPARTMENT);
 
     private StudentService studentService =(StudentService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.STUDENT);
 
     private PreRequisiteService preRequisiteService = (PreRequisiteService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.PREREQUISITE);
 
+    private EnrollmentService enrollmentService = (EnrollmentService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.ENROLLMENT);
     @FXML
     private ComboBox<PreRequisiteDto> PreRequists;
 
@@ -52,7 +49,17 @@ public class AdminController {
     public TextArea courseDescription;
 
     @FXML
+    public AnchorPane gpaUpatePane;
+
+    @FXML
     private AnchorPane coursesPane;
+
+    @FXML
+    private AnchorPane searchAnchorPane;
+
+    @FXML
+    public AnchorPane enrollmentsPane;
+
 
     @FXML
     private TableView<CourseDto> coursesTable;
@@ -69,7 +76,8 @@ public class AdminController {
     @FXML
     private TextField studentName;
 
-
+    @FXML
+    private TextField searchField;
 
     @FXML
     private TextField studentProgram;
@@ -145,7 +153,57 @@ public class AdminController {
     private TableColumn<StudentDto,String> student_contact_col;
 
     @FXML
+    private TableColumn<EnrollmentDto,String> enrollment_id_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> enroll_student_id_col;
+
+    @FXML
+    public TableColumn<EnrollmentDto,String> enroll_student_name_col;
+
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> enroll_course_name_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> semester_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> status_type_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> gpa_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,String> grade_col;
+
+    @FXML
+    private TableColumn<EnrollmentDto,Void> add_gpa_col;
+
+
+    @FXML
     private TableView<StudentDto> studentsTable;
+
+    @FXML
+    private TableView<EnrollmentDto> enrollmentTable;
+
+    @FXML
+    private  Label enrollId;
+
+    @FXML
+    private Label enrollStudentId;
+
+    @FXML
+    private Label enrollCourseId;
+
+    @FXML
+    private Label semester;
+
+    @FXML
+    private Label status;
+
+    @FXML
+    private TextField gpa;
 
     public void initialize() throws Exception {
         // Load departments (example data)
@@ -209,6 +267,7 @@ public class AdminController {
 
         displayOrRefreshCourseTable();
         displayOrRefreshStudentsTable();
+        displayOrRefreshEnrollmentsTable();
     }
 
     private void populateStudentFields(StudentDto selectedStudentDto){
@@ -267,6 +326,69 @@ public class AdminController {
         }
     }
 
+    private void displayOrRefreshEnrollmentsTable() {
+        enrollment_id_col.setCellValueFactory(new PropertyValueFactory<>("enrollId"));
+        enroll_course_name_col.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+        semester_col.setCellValueFactory(cellData -> {
+            String semester = String.valueOf(cellData.getValue().getSemester());
+            return new SimpleStringProperty(WordsConverter.getRealValue(semester));
+        });
+        status_type_col.setCellValueFactory(cellData -> {
+            String semester = String.valueOf(cellData.getValue().getStatus());
+            return new SimpleStringProperty(WordsConverter.getRealValue(semester));
+        });
+        enroll_student_id_col.setCellValueFactory(new PropertyValueFactory<>("studentId"));
+        enroll_student_name_col.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        gpa_col.setCellValueFactory(new PropertyValueFactory<>("gpa"));
+        grade_col.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        add_gpa_col.setCellFactory(param -> new TableCell<EnrollmentDto, Void>() {
+            private final Button addGpaButton = new Button("Add GPA");
+
+            {
+                addGpaButton.setStyle("-fx-background-color: orange; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-padding: 5px 10px; ");
+
+                addGpaButton.setOnAction(event -> {
+                    EnrollmentDto enrollment = getTableView().getItems().get(getIndex());
+                    handleAddGpa(enrollment);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(addGpaButton);
+                }
+            }
+        });
+
+
+        try {
+            enrollmentTable.setItems(getEnrollmentList());
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private void handleAddGpa(EnrollmentDto enrollment) {
+        System.out.println("calling");
+        enrollStudentId.setText(enrollment.getStudentId());
+        enrollCourseId.setText(enrollment.getCourseId());
+        semester.setText(enrollment.getSemester().name());
+        status.setText(enrollment.getStatus().name());
+        enrollId.setText(enrollment.getEnrollId());
+        enrollmentsPane.setVisible(false);
+        gpaUpatePane.setVisible(true);
+    }
+
     private void displayOrRefreshStudentsTable() {
         student_id_col.setCellValueFactory(new PropertyValueFactory<>("studentId"));
         student_name_col.setCellValueFactory(new PropertyValueFactory<>("studentName"));
@@ -278,7 +400,13 @@ public class AdminController {
 
 
         try {
-            studentsTable.setItems(getStudentList());
+            if(searchField.getText().trim().isEmpty()){
+                studentsTable.setItems(getStudentList());
+            }
+            else{
+                studentsTable.setItems(getSearchedStudentList());
+            }
+
         }
         catch (Exception e) {
 
@@ -296,9 +424,31 @@ public class AdminController {
         return courses;
     }
 
+    ObservableList<EnrollmentDto> getEnrollmentList() throws Exception{
+         ObservableList<EnrollmentDto> enrollments = FXCollections.observableArrayList();
+         ArrayList<EnrollmentDto> enrollmentDtos = enrollmentService.getAll();
+
+         for(EnrollmentDto enrollmentDto : enrollmentDtos){
+             enrollments.add(enrollmentDto);
+
+         }
+        return enrollments;
+    }
+
     ObservableList<StudentDto> getStudentList() throws Exception{
         ObservableList<StudentDto> students = FXCollections.observableArrayList();
         ArrayList<StudentDto> studentDtos = studentService.getAll();
+        for(StudentDto studentDto : studentDtos){
+            students.add(studentDto);
+        }
+
+        return students;
+    }
+
+    ObservableList<StudentDto> getSearchedStudentList() throws Exception{
+        ObservableList<StudentDto> students = FXCollections.observableArrayList();
+        System.out.println(searchField.getText());
+        ArrayList<StudentDto> studentDtos = studentService.searchStudentByIdOrEmail(searchField.getText());
         for(StudentDto studentDto : studentDtos){
             students.add(studentDto);
         }
@@ -344,6 +494,7 @@ public class AdminController {
         homePane.setVisible(userData.equals("home"));
         coursesPane.setVisible(userData.equals("courses"));
         studentsPane.setVisible(userData.equals("students"));
+        enrollmentsPane.setVisible(userData.equals("enrollments"));
     }
 
 
@@ -356,6 +507,19 @@ public class AdminController {
     @FXML
     void updateStudent(ActionEvent event) throws Exception {
          String Output = studentService.update(new StudentDto(studentId.getText(),studentName.getText(),studentProgram.getText(),studentEmail.getText(),studentdob.getValue(),Integer.parseInt(studentyear.getText()),Integer.parseInt(contactNumber.getText())));
+        displayOrRefreshStudentsTable();
+    }
+
+    @FXML
+    public void updateGpa(ActionEvent actionEvent) throws Exception {
+        String output = enrollmentService.update(new EnrollmentDto(enrollId.getText(),Double.parseDouble(gpa.getText())));
+        displayOrRefreshEnrollmentsTable();
+        enrollmentsPane.setVisible(true);
+        gpaUpatePane.setVisible(false);
+    }
+
+    @FXML
+    public void SearchStudent(KeyEvent inputMethodEvent) {
         displayOrRefreshStudentsTable();
     }
 }
