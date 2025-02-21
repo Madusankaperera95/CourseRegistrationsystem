@@ -57,22 +57,6 @@
 
                
                            <!-- Courses Section -->
-            <AnchorPane fx:id="EnrollmentsPane" styleClass="content-area" visible="false">
-                <VBox layoutX="20" layoutY="20" spacing="10">
-                    <Label styleClass="section-title" text="Enrollemnts" />
-                </VBox>
-            <TableView fx:id="enrollTable" layoutX="35.0" layoutY="69.0" prefHeight="227.0" prefWidth="771.0">
-              <columns>
-                  <TableColumn fx:id="enrollment_id_col" prefWidth="83.20001220703125" text="Enrollment ID" />
-                  <TableColumn fx:id="enroll_course_name_col" prefWidth="111.20004272460938" text="Course Name" />
-                  <TableColumn fx:id="semester_col" prefWidth="119.99996948242188" text="Semester" />
-                  <TableColumn fx:id="status_type_col" prefWidth="116.79998779296875" text="Status" />
-                  <TableColumn fx:id="gpa_col" prefWidth="94.4000244140625" text="Gpa" />
-                  <TableColumn fx:id="grade_col" prefWidth="86.39990234375" text="Grade" />
-                  <TableColumn fx:id="action_col" prefWidth="245.60009765625" text="Action" />
-              </columns>
-            </TableView>
-            </AnchorPane>
 
             <!-- Students Section -->
             <AnchorPane fx:id="academicRecordsPane" styleClass="content-area" visible="false">
@@ -138,10 +122,7 @@
                            <RowConstraints />
                         </rowConstraints>
                             </GridPane>
-                            <HBox spacing="10">
-                                <Button onAction="#registerForCourse" style="-fx-background-color: orange; -fx-text-fill: white;" text="Submit Registration" />
-                                <Button text="Reset" />
-                            </HBox>
+
                         </VBox>
                     </bottom>
                 </BorderPane>

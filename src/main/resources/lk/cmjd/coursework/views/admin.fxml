@@ -198,75 +198,7 @@
                     </TableView>
                 </VBox>
             </AnchorPane>
-         <AnchorPane fx:id="enrollmentsPane" styleClass="content-area">
-            <children>
-               <VBox layoutX="20" layoutY="20" spacing="10">
-                  <children>
-                     <Label styleClass="section-title" text="Enrollments" />
-                  </children>
-               </VBox>
-               <TableView fx:id="enrollmentTable" layoutX="38.0" layoutY="125.0" prefHeight="250.0" prefWidth="1041.0">
-                 <columns>
-                     <TableColumn fx:id="enrollment_id_col" prefWidth="100" text="Enrollment ID" />
-                     <TableColumn fx:id="enroll_student_id_col" prefWidth="100" text="Student Id" />
-                     <TableColumn fx:id="enroll_student_name_col" prefWidth="100" text="Student Name" />
-                     <TableColumn fx:id="enroll_course_name_col" prefWidth="100" text="Course Id" />
-                     <TableColumn fx:id="semester_col" prefWidth="148.79998779296875" text="Semester" />
-                     <TableColumn fx:id="status_type_col" prefWidth="124.79998779296875" text="Status" />
-                     <TableColumn fx:id="gpa_col" prefWidth="126.4000244140625" text="Gpa" />
-                     <TableColumn fx:id="grade_col" prefWidth="126.4000244140625" text="Grade" />
-                     <TableColumn fx:id="add_gpa_col" prefWidth="126.4000244140625" text="Action" />
-                 </columns>
-               </TableView>
-            </children>
-         </AnchorPane>
-         <AnchorPane fx:id="gpaUpatePane" styleClass="content-area" visible="false">
-            <children>
-               <VBox layoutX="20" layoutY="20" spacing="10">
-                  <children>
-                     <Label styleClass="section-title" text="GPA Update Profile" />
-                      <GridPane hgap="10" vgap="10">
-                          <Label fx:id="enrollId" visible="false" />
-                          <Label text="Student ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                          <Label fx:id="enrollStudentId" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                          <Label text="CourseId:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                          <Label fx:id="enrollCourseId" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-
-                          <Label text="Semester:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                          <Label fx:id="semester" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
-                          <Label text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                          <Label fx:id="status" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-
-                          <Label text="GPA:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                          <TextField fx:id="gpa" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-
-
-                          <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                              <Button onAction="#updateGpa" styleClass="update-btn" text="Save Changes" />
-
-                          </HBox>
-                          <columnConstraints>
-                              <ColumnConstraints />
-                              <ColumnConstraints />
-                          </columnConstraints>
-                          <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                          </rowConstraints>
-                      </GridPane>
-                  </children>
-               </VBox>
-            </children>
-         </AnchorPane>
         </StackPane>
     </center>
 

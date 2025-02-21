@@ -20,8 +20,7 @@ public class DaoFactory {
         switch (type) {
             case ITEM:
                 return null;
-            case ENROLLMENT:
-                 return new EnrollmentDaoImpl();
+
             case ROLE:
                 return new RoleDaoImpl();
             case OLRDER_DETAIL:

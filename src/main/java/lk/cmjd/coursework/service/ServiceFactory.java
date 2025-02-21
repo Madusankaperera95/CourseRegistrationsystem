@@ -24,8 +24,7 @@ public class ServiceFactory {
                 return new StudentserviceImpl();
             case COURSE:
                 return new CourseServiceImpl();
-            case ENROLLMENT:
-                return new EnrollmentServiceImpl();
+
             case LOGIN:
                 return new LoginServiceImpl();
             case DEPARTMENT:
