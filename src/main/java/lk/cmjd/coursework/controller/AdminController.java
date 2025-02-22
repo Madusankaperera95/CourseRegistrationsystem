@@ -13,6 +13,8 @@ import javafx.scene.layout.StackPane;
 import lk.cmjd.coursework.dto.*;
 import lk.cmjd.coursework.service.ServiceFactory;
 import lk.cmjd.coursework.service.custom.*;
+import lk.cmjd.coursework.util.Enums.SemesterTypes;
+import lk.cmjd.coursework.util.SemesterUtil;
 import lk.cmjd.coursework.util.WordsConverter;
 
 import java.util.ArrayList;
@@ -30,6 +32,10 @@ public class AdminController {
     private PreRequisiteService preRequisiteService = (PreRequisiteService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.PREREQUISITE);
 
     private EnrollmentService enrollmentService = (EnrollmentService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.ENROLLMENT);
+
+    @FXML
+    private ComboBox<SemesterUtil> searchSemesterComboBox;
+
     @FXML
     private ComboBox<PreRequisiteDto> PreRequists;
 
@@ -205,6 +211,12 @@ public class AdminController {
     @FXML
     private TextField gpa;
 
+    @FXML
+    private ComboBox<CourseDto> CourseComboBox;
+
+    @FXML
+    private Button filterButton;
+
     public void initialize() throws Exception {
         // Load departments (example data)
         List<DepartmentDto> departments = departmentService.getAll();
@@ -268,6 +280,73 @@ public class AdminController {
         displayOrRefreshCourseTable();
         displayOrRefreshStudentsTable();
         displayOrRefreshEnrollmentsTable();
+        loadCourses();
+        loadSemesters();
+    }
+
+    private void loadCourses() throws Exception {
+        ArrayList<CourseDto> allCourses = courseService.getAll();
+
+        CourseDto selectOption = new CourseDto();
+        selectOption.setCourseName("Select"); // Ensure your CourseDto has a setter method
+
+        allCourses.add(0, selectOption);
+
+        ObservableList<CourseDto> courses = FXCollections.observableArrayList(allCourses);
+        CourseComboBox.setItems(courses);
+
+        CourseComboBox.setCellFactory(param -> new ListCell<CourseDto>() {
+            @Override
+            protected void updateItem(CourseDto item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getCourseName());
+            }
+        });
+
+        CourseComboBox.setButtonCell(new ListCell<CourseDto>() {
+            @Override
+            protected void updateItem(CourseDto item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getCourseName());
+            }
+        });
+
+        CourseComboBox.getSelectionModel().selectFirst();
+    }
+
+
+    private void loadSemesters() {
+        // Create a dummy "Select" option
+        SemesterUtil selectOption = new SemesterUtil();
+        selectOption.setValue("Select");
+
+        // Create the list with the "Select" option and actual semesters
+        ObservableList<SemesterUtil> semesters = FXCollections.observableArrayList(
+                selectOption, // Add "Select" option first
+                new SemesterUtil(SemesterTypes.FIRSTSEMESTER, "First Semester"),
+                new SemesterUtil(SemesterTypes.SECONDSEMESTER, "Second Semester")
+        );
+
+        searchSemesterComboBox.setItems(semesters);
+
+        searchSemesterComboBox.setCellFactory(param -> new ListCell<SemesterUtil>() {
+            @Override
+            protected void updateItem(SemesterUtil item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getValue());
+            }
+        });
+
+        searchSemesterComboBox.setButtonCell(new ListCell<SemesterUtil>() {
+            @Override
+            protected void updateItem(SemesterUtil item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getValue());
+            }
+        });
+
+        // Set "Select" as the default selected item
+        searchSemesterComboBox.getSelectionModel().selectFirst();
     }
 
     private void populateStudentFields(StudentDto selectedStudentDto){
@@ -522,4 +601,88 @@ public class AdminController {
     public void SearchStudent(KeyEvent inputMethodEvent) {
         displayOrRefreshStudentsTable();
     }
+
+    public void filterEnrollments(ActionEvent actionEvent) {
+        CourseDto courseDto = CourseComboBox.getValue();
+        SemesterUtil semesterUtil = searchSemesterComboBox.getValue();
+        System.out.println(courseDto.getCourseId());
+        System.out.println(semesterUtil.getKey());
+        if(courseDto.getCourseName().equals("Select") || semesterUtil.getValue().equals("Select") ){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Alert Box");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the Options");
+            alert.showAndWait();
+        }
+
+        else {
+            filterEnrollmentsTable(courseDto.getCourseId(), semesterUtil.getKey());
+        }
+    }
+
+    private void filterEnrollmentsTable(String courseId,SemesterTypes semesterType) {
+
+        enrollment_id_col.setCellValueFactory(new PropertyValueFactory<>("enrollId"));
+        enroll_course_name_col.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+        semester_col.setCellValueFactory(cellData -> {
+            String semester = String.valueOf(cellData.getValue().getSemester());
+            return new SimpleStringProperty(WordsConverter.getRealValue(semester));
+        });
+        status_type_col.setCellValueFactory(cellData -> {
+            String semester = String.valueOf(cellData.getValue().getStatus());
+            return new SimpleStringProperty(WordsConverter.getRealValue(semester));
+        });
+        enroll_student_id_col.setCellValueFactory(new PropertyValueFactory<>("studentId"));
+        enroll_student_name_col.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        gpa_col.setCellValueFactory(new PropertyValueFactory<>("gpa"));
+        grade_col.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        add_gpa_col.setCellFactory(param -> new TableCell<EnrollmentDto, Void>() {
+            private final Button addGpaButton = new Button("Add GPA");
+
+            {
+                addGpaButton.setStyle("-fx-background-color: orange; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-padding: 5px 10px; ");
+
+                addGpaButton.setOnAction(event -> {
+                    EnrollmentDto enrollment = getTableView().getItems().get(getIndex());
+                    handleAddGpa(enrollment);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(addGpaButton);
+                }
+            }
+        });
+
+
+        try {
+            enrollmentTable.setItems(getEnrollmentForFilter(courseId,semesterType));
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    ObservableList<EnrollmentDto> getEnrollmentForFilter(String courseId,SemesterTypes semester) throws Exception{
+        ObservableList<EnrollmentDto> enrollments = FXCollections.observableArrayList();
+        ArrayList<EnrollmentDto> enrollmentDtos = enrollmentService.getEnrollmentsForFilter(courseId,semester);
+
+        for(EnrollmentDto enrollmentDto : enrollmentDtos){
+            enrollments.add(enrollmentDto);
+
+        }
+        return enrollments;
+    }
 }
+
+
+
+

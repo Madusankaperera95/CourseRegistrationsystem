@@ -57,7 +57,7 @@
             </AnchorPane>
 
             <!-- Courses Section -->
-            <AnchorPane fx:id="coursesPane" styleClass="content-area" visible="false">
+            <AnchorPane fx:id="coursesPane" styleClass="content-area">
                 <VBox layoutX="20" layoutY="20" spacing="10">
                     <Label styleClass="section-title" text="Course Management" />
 
@@ -106,7 +106,7 @@
                     </GridPane>
 
                     <!-- Courses Table -->
-                    <TableView fx:id="coursesTable" prefHeight="200">
+                    <TableView fx:id="coursesTable" prefHeight="200" prefWidth="930.0">
                         <columns>
                             <TableColumn fx:id="course_id_col" prefWidth="100" text="Course ID" />
                             <TableColumn fx:id="course_title_col" prefWidth="100" text="Course Title" />
@@ -114,14 +114,14 @@
                             <TableColumn fx:id="course_department_col" prefWidth="148.79998779296875" text="Department" />
                             <TableColumn fx:id="course_prerequistes_col" prefWidth="124.79998779296875" text="PreRequisites" />
                             <TableColumn fx:id="course_max_capacity_col" prefWidth="126.4000244140625" text="Maximum Capacity" />
-                            <TableColumn fx:id="course_description_col" prefWidth="126.4000244140625" text="description" />
+                            <TableColumn fx:id="course_description_col" prefWidth="227.2000732421875" text="description" />
                         </columns>
                     </TableView>
                 </VBox>
             </AnchorPane>
 
             <!-- Students Section -->
-            <AnchorPane fx:id="studentsPane" styleClass="content-area">
+            <AnchorPane fx:id="studentsPane" styleClass="content-area" visible="false">
                 <VBox layoutX="20" layoutY="20" spacing="10">
                     <Label styleClass="section-title" text="Student Management" />
 
@@ -198,29 +198,49 @@
                     </TableView>
                 </VBox>
             </AnchorPane>
-         <AnchorPane fx:id="enrollmentsPane" styleClass="content-area">
-            <children>
-               <VBox layoutX="20" layoutY="20" spacing="10">
-                  <children>
-                     <Label styleClass="section-title" text="Enrollments" />
-                  </children>
-               </VBox>
-               <TableView fx:id="enrollmentTable" layoutX="38.0" layoutY="125.0" prefHeight="250.0" prefWidth="1041.0">
-                 <columns>
-                     <TableColumn fx:id="enrollment_id_col" prefWidth="100" text="Enrollment ID" />
-                     <TableColumn fx:id="enroll_student_id_col" prefWidth="100" text="Student Id" />
-                     <TableColumn fx:id="enroll_student_name_col" prefWidth="100" text="Student Name" />
-                     <TableColumn fx:id="enroll_course_name_col" prefWidth="100" text="Course Id" />
-                     <TableColumn fx:id="semester_col" prefWidth="148.79998779296875" text="Semester" />
-                     <TableColumn fx:id="status_type_col" prefWidth="124.79998779296875" text="Status" />
-                     <TableColumn fx:id="gpa_col" prefWidth="126.4000244140625" text="Gpa" />
-                     <TableColumn fx:id="grade_col" prefWidth="126.4000244140625" text="Grade" />
-                     <TableColumn fx:id="add_gpa_col" prefWidth="126.4000244140625" text="Action" />
-                 </columns>
-               </TableView>
-            </children>
-         </AnchorPane>
-         <AnchorPane fx:id="gpaUpatePane" styleClass="content-area" visible="false">
+            <AnchorPane fx:id="enrollmentsPane" styleClass="content-area" visible="false">
+                <children>
+                    <VBox layoutX="20" layoutY="20" prefHeight="94.0" prefWidth="1062.0" spacing="10">
+                        <children>
+                            <Label styleClass="section-title" text="Enrollments" />
+
+                            <!-- HBox for Search Filters -->
+                            <AnchorPane>
+                                <HBox alignment="CENTER_RIGHT" spacing="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10">
+                                    <children>
+                                        <Label text="Course:" />
+                                        <ComboBox fx:id="CourseComboBox" prefWidth="150.0" />
+
+                                        <Label text="Semester:" />
+                                        <ComboBox fx:id="searchSemesterComboBox" prefWidth="150.0" />
+
+                                        <Button fx:id="filterButton" onAction="#filterEnrollments" text="Search" />
+                                    </children>
+                                </HBox>
+                            </AnchorPane>
+
+                        </children>
+                    </VBox>
+
+                    <!-- Enrollment Table -->
+                    <TableView fx:id="enrollmentTable" layoutX="38.0" layoutY="125.0" prefHeight="250.0" prefWidth="1041.0">
+                        <columns>
+                            <TableColumn fx:id="enrollment_id_col" prefWidth="100" text="Enrollment ID" />
+                            <TableColumn fx:id="enroll_student_id_col" prefWidth="100" text="Student Id" />
+                            <TableColumn fx:id="enroll_student_name_col" prefWidth="100" text="Student Name" />
+                            <TableColumn fx:id="enroll_course_name_col" prefWidth="100" text="Course Id" />
+                            <TableColumn fx:id="semester_col" prefWidth="148.8" text="Semester" />
+                            <TableColumn fx:id="status_type_col" prefWidth="124.8" text="Status" />
+                            <TableColumn fx:id="gpa_col" prefWidth="126.4" text="Gpa" />
+                            <TableColumn fx:id="grade_col" prefWidth="126.4" text="Grade" />
+                            <TableColumn fx:id="add_gpa_col" prefWidth="126.4" text="Action" />
+                        </columns>
+                    </TableView>
+                </children>
+            </AnchorPane>
+
+
+            <AnchorPane fx:id="gpaUpatePane" styleClass="content-area" visible="false">
             <children>
                <VBox layoutX="20" layoutY="20" spacing="10">
                   <children>

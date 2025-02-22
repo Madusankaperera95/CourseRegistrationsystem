@@ -19,10 +19,14 @@ public interface EnrollmentDao extends SuperDao {
 
     boolean SemesterOneHasCompleted(String CourseId, String StudentId, Session session);
 
+    boolean semesterHasCompleted(int id,Session session);
+
     String delete(int id,Session session);
 
     ArrayList<EnrollmentEntity> getAll() throws Exception;
 
     ArrayList<EnrollmentEntity> getEnrollmentsByStudentId(String enrollId,Session session);
+
+    ArrayList<EnrollmentEntity> getEnrollmentsForFilter(String courseId,SemesterTypes semesterType,Session session);
 
 }

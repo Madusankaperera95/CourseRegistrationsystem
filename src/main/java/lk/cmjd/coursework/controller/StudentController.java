@@ -7,13 +7,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import lk.cmjd.coursework.dto.CourseDto;
 import lk.cmjd.coursework.dto.EnrollmentDto;
@@ -34,6 +32,21 @@ public class StudentController implements Initializable {
 
     @FXML
     public AnchorPane coursePane;
+
+    @FXML
+    public Label qualification;
+
+    @FXML
+    public VBox detailsRegisteringView;
+
+    @FXML
+    public RadioButton yesRadioButton;
+
+    @FXML
+    public RadioButton noRadioButton;
+
+    private ToggleGroup alToggleGroup;
+
 
     private CourseService courseService = (CourseService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.COURSE);
 
@@ -171,6 +184,29 @@ public class StudentController implements Initializable {
             }
         });
 
+        alToggleGroup = new ToggleGroup();
+        yesRadioButton.setToggleGroup(alToggleGroup);
+        noRadioButton.setToggleGroup(alToggleGroup);
+
+        yesRadioButton.setOnAction(event -> {
+            if (yesRadioButton.isSelected()) {
+                noRadioButton.setSelected(false); // Remove dot from "No"
+                detailsRegisteringView.setVisible(true);
+            }
+        });
+
+        noRadioButton.setOnAction(event -> {
+            if (noRadioButton.isSelected()) {
+                yesRadioButton.setSelected(false); // Remove dot from "Yes"
+                detailsRegisteringView.setVisible(false);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Alert Box");
+                alert.setHeaderText(null);
+                alert.setContentText("You cannot complete this course");
+                alert.showAndWait();
+            }
+        });
+
     }
 
     private String getRealValue(SemesterTypes val) {
@@ -191,6 +227,7 @@ public class StudentController implements Initializable {
     private void createCards() {
         cardContainer.getChildren().clear();
         for (CourseDto course : courses) {
+            System.out.println(course.toString());
             VBox card = createCard(course);
             cardContainer.getChildren().add(card);
         }
@@ -207,6 +244,7 @@ public class StudentController implements Initializable {
         Label title = new Label(course.getCourseName());
         title.getStyleClass().add("title");
 
+
 //        Label desc = new Label(item.getDescription());
 //        desc.getStyleClass().add("desc");
 //        desc.setWrapText(true);
@@ -221,6 +259,7 @@ public class StudentController implements Initializable {
        courseNameLbl.setText(course.getCourseName());
        courseDurationLbl.setText(course.getCreditHours());
        courseDescriptionLbl.setText(course.getDescription());
+        qualification.setText("Do You have Completed "+ course.getPreRequistName());
         homePane.setVisible(false);
         coursePane.setVisible(true);
         courseId.setText(course.getCourseId());
@@ -272,6 +311,9 @@ public class StudentController implements Initializable {
                 if (empty) {
                     setGraphic(null);
                 } else {
+                    HBox hbox = new HBox(dropCourseBtn);
+                    hbox.setAlignment(Pos.CENTER); // Center horizontally
+                    hbox.setSpacing(5);
                     setGraphic(dropCourseBtn);
                 }
             }
@@ -303,6 +345,13 @@ public class StudentController implements Initializable {
 
     private void dropCourse(EnrollmentDto enrollment) {
         String resp = enrollmentService.deleteEnrollment(Integer.parseInt(enrollment.getEnrollId()));
+        if(resp != "ok"){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Alert Box");
+            alert.setHeaderText(null);
+            alert.setContentText(resp);
+            alert.showAndWait();
+        }
         displayOrRefreshEnrollmentTable();
 
     }

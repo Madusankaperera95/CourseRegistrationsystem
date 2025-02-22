@@ -16,7 +16,12 @@ public class CourseDto {
     public CourseDto() {
     }
 
-    public CourseDto(String courseId, String courseName, String creditHours, int department, int prerequisites, String maximumCapacity,String description) {
+    public CourseDto(String courseId, String courseName) {
+        CourseId = courseId;
+        CourseName = courseName;
+    }
+
+    public CourseDto(String courseId, String courseName, String creditHours, int department, int prerequisites, String maximumCapacity, String description) {
         CourseId = courseId;
         CourseName = courseName;
         CreditHours = creditHours;

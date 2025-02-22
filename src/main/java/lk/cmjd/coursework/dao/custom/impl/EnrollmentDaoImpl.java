@@ -26,6 +26,8 @@ public class EnrollmentDaoImpl implements EnrollmentDao {
         return "ok";
     }
 
+
+
     @Override
     public EnrollmentEntity getEnrollment(int id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -69,6 +71,16 @@ public class EnrollmentDaoImpl implements EnrollmentDao {
     }
 
     @Override
+    public boolean semesterHasCompleted(int id, Session session) {
+        EnrollmentEntity existingEnrollment = session.createQuery("FROM EnrollmentEntity where enrollId = :enrollId AND status = :status",EnrollmentEntity.class)
+                .setParameter("enrollId",id)
+                .setParameter("status",Status.COMPLETED)
+                .uniqueResult();
+        return existingEnrollment != null;
+
+    }
+
+    @Override
     public String delete(int id, Session session) {
         Transaction transaction = null;
         try {
@@ -108,6 +120,16 @@ public class EnrollmentDaoImpl implements EnrollmentDao {
     public ArrayList<EnrollmentEntity> getEnrollmentsByStudentId(String studentId,Session session) {
         ArrayList<EnrollmentEntity> enrollments = (ArrayList<EnrollmentEntity>) session.createQuery("FROM EnrollmentEntity WHERE studentEntity.StudentId = :StudentId", EnrollmentEntity.class)
                 .setParameter("StudentId", studentId)
+                .list();
+
+        return enrollments;
+    }
+
+    @Override
+    public ArrayList<EnrollmentEntity> getEnrollmentsForFilter(String courseId, SemesterTypes semesterType, Session session) {
+        ArrayList<EnrollmentEntity> enrollments = (ArrayList<EnrollmentEntity>) session.createQuery("FROM EnrollmentEntity WHERE course.courseId = :CourseId AND semesterType = :semester", EnrollmentEntity.class)
+                .setParameter("CourseId", courseId)
+                .setParameter("semester", semesterType)
                 .list();
 
         return enrollments;

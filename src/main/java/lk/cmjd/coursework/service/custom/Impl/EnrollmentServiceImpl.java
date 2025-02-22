@@ -157,8 +157,32 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    public ArrayList<EnrollmentDto> getEnrollmentsForFilter(String CourseId, SemesterTypes semseter) throws Exception {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var student = courseDao.getCourse(CourseId,session);
+
+        if(student == null){
+            throw new Exception("Course Not Found");
+        }
+
+        ArrayList<EnrollmentDto> enrollemnts = new ArrayList<>();
+
+        var enrollmentEntities = enrollmentDao.getEnrollmentsForFilter(CourseId,semseter,session);
+
+        for(EnrollmentEntity enrollmentEntity : enrollmentEntities)
+        {
+            enrollemnts.add(new EnrollmentDto(String.valueOf(enrollmentEntity.getEnrollId()),enrollmentEntity.getCourse().getCourseId(),enrollmentEntity.getSemesterType(),enrollmentEntity.getStatus(),enrollmentEntity.getStudentEntity().getStudentId(),enrollmentEntity.getGpa(),enrollmentEntity.getGrade(),enrollmentEntity.getStudentEntity().getStudentName(),enrollmentEntity.getCourse().getCourseName()));
+        }
+
+        return enrollemnts;
+    }
+
+    @Override
     public String deleteEnrollment(int id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
+        if(enrollmentDao.semesterHasCompleted(id,session)){
+           return "Cannot Delete You have already completed the course";
+        }
         String resp = enrollmentDao.delete(id,session);
         return resp;
     }
