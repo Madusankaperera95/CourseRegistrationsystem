@@ -173,3 +173,64 @@
     -fx-padding: 10px;
 }
 
+.logout-btn {
+    -fx-background-color: #d9534f; /* Bootstrap Red */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+}
+.logout-btn:hover {
+    -fx-background-color: #c9302c;
+}
+
+.content-area {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 20px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+}
+
+.section-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-padding: 10px 0;
+}
+
+.form-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555;
+}
+
+.form-input {
+    -fx-pref-width: 250px;
+    -fx-padding: 8px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #ccc;
+    -fx-background-color: white;
+}
+
+.updateGpa-btn {
+    -fx-background-color: #494eb6;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-font-size: 16px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.updateGpa-btn:hover {
+    -fx-background-color: #494EB6FF;
+}
+
+.card-template{
+    -fx-background-color: white;
+    -fx-padding: 30px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+

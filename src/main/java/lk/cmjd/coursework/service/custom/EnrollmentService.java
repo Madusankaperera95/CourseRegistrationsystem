@@ -6,6 +6,7 @@ import lk.cmjd.coursework.service.SuperService;
 import lk.cmjd.coursework.util.Enums.SemesterTypes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface EnrollmentService extends SuperService {
     String save(EnrollmentDto enrollmentDto) throws Exception;
@@ -17,6 +18,9 @@ public interface EnrollmentService extends SuperService {
     ArrayList<EnrollmentDto> getEnrollmentsByStudentId(String StudentId) throws Exception;
 
     ArrayList<EnrollmentDto> getEnrollmentsForFilter(String CourseId, SemesterTypes semseter) throws Exception;
+
+
+    List<Object[]> getEnrollmentCountWithCourse();
 
     String deleteEnrollment(int id);
 }

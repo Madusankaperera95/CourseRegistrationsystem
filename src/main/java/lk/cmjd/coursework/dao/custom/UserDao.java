@@ -13,5 +13,9 @@ public interface UserDao extends SuperDao {
 
     String Update(UserEntity userEntity, Session session);
 
+    boolean CheckOldPasswordCorrect(String email,String Password,Session session);
+
+
+
 
 }

@@ -77,7 +77,25 @@ public class UserDaoImpl implements UserDao {
             session.update(managedUser); // Or merge if necessary
             return "ok";
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new RuntimeException("User update failed" + e.getMessage());
         }
+    }
+
+    @Override
+    public boolean CheckOldPasswordCorrect(String email, String OldPassword,Session session) {
+
+        UserEntity user = null;
+
+        try {
+            Query<UserEntity> query = session.createQuery("FROM UserEntity WHERE userEmail = :email", UserEntity.class);
+            query.setParameter("email", email);
+            user = query.uniqueResult();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return user.verifyPassword(OldPassword);
     }
 }

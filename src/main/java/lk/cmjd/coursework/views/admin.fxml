@@ -50,8 +50,8 @@
 
                     <!-- Total Card -->
                     <AnchorPane styleClass="card">
-                        <Label styleClass="card-title" text="Total Users" />
-                        <Label fx:id="totalCount" layoutX="50" layoutY="40" styleClass="card-count" text="0" />
+                        <Label styleClass="card-title" text="Total Enrollments" />
+                        <Label fx:id="enrollmentCount" layoutX="50" layoutY="40" styleClass="card-count" text="0" />
                     </AnchorPane>
                 </HBox>
             </AnchorPane>

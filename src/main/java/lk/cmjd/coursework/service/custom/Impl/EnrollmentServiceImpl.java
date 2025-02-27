@@ -16,6 +16,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EnrollmentServiceImpl implements EnrollmentService {
     private CourseDao courseDao = (CourseDao)  DaoFactory.getInstance().getDao(DaoFactory.DaoTypes.COURSE);
@@ -38,6 +39,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 throw new Exception("course Not Found");
             }
 
+            if(enrollmentDao.getEnrolledStudentsPerCourse(enrollmentDto.getCourseId(),enrollmentDto.getSemester(),session) == Integer.parseInt(course.getMaximumCapacity())){
+                throw new Exception("Maximum students were enrolled for this Course");
+            }
+
             // Fetch the student using the current session
             StudentEntity studentEntity = studentDao.getStudent(enrollmentDto.getStudentId(), session);
             if (studentEntity == null) {
@@ -49,7 +54,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             }
 
             if(!enrollmentDao.SemesterOneHasCompleted(enrollmentDto.getCourseId(),enrollmentDto.getStudentId(),session) && enrollmentDto.getSemester().equals(SemesterTypes.SECONDSEMESTER)){
-                throw new Exception("Semester one is  not completed yet Completed");
+                throw new Exception("Semester one is  not completed Yet");
             }
             enrollmentDao.save(new EnrollmentEntity(course,enrollmentDto.getSemester(),enrollmentDto.getStatus(),studentEntity),session);
 
@@ -175,6 +180,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         return enrollemnts;
+    }
+
+    @Override
+    public List<Object[]> getEnrollmentCountWithCourse() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        return enrollmentDao.getEnrollmentCount(session);
     }
 
     @Override

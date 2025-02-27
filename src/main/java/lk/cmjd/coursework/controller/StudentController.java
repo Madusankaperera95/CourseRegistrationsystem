@@ -6,23 +6,35 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import lk.cmjd.coursework.dto.ChangePasswordDto;
 import lk.cmjd.coursework.dto.CourseDto;
 import lk.cmjd.coursework.dto.EnrollmentDto;
 import lk.cmjd.coursework.dto.StudentDto;
 import lk.cmjd.coursework.service.ServiceFactory;
 import lk.cmjd.coursework.service.custom.CourseService;
 import lk.cmjd.coursework.service.custom.EnrollmentService;
+import lk.cmjd.coursework.service.custom.UserService;
 import lk.cmjd.coursework.util.Enums.SemesterTypes;
 import lk.cmjd.coursework.util.Enums.Status;
+import lk.cmjd.coursework.util.LogOutUtil;
 import lk.cmjd.coursework.util.WordsConverter;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +57,18 @@ public class StudentController implements Initializable {
     @FXML
     public RadioButton noRadioButton;
 
+    @FXML
+    public PasswordField currentPassword;
+
+    @FXML
+    public PasswordField newPassword;
+
+    @FXML
+    public PasswordField confirmPassword;
+
+    @FXML
+    public TextField studentId;
+
     private ToggleGroup alToggleGroup;
 
 
@@ -52,13 +76,15 @@ public class StudentController implements Initializable {
 
     private EnrollmentService enrollmentService = (EnrollmentService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.ENROLLMENT);
 
+    private UserService userservice = (UserService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.USER);
+
     private StudentDto studentObj;
 
     @FXML
     private AnchorPane EnrollmentsPane;
 
     @FXML
-    private AnchorPane academicRecordsPane;
+    private AnchorPane changePasswordPane;
 
     @FXML
     private StackPane contentArea;
@@ -69,8 +95,11 @@ public class StudentController implements Initializable {
     @FXML
     private AnchorPane homePane;
 
-    @FXML private TextField searchField;
-    @FXML private TilePane cardContainer;
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private TilePane cardContainer;
 
     @FXML
     public Label courseNameLbl;
@@ -108,6 +137,15 @@ public class StudentController implements Initializable {
     @FXML
     public TableView<EnrollmentDto> enrollTable;
 
+    @FXML
+    private BarChart<String, Number> enrollmentChart;
+
+    @FXML
+    private CategoryAxis subjectAxis;
+
+    @FXML
+    private NumberAxis studentAxis;
+
 
     private final SemesterTypes[] semesterTypes = SemesterTypes.values();
 
@@ -134,7 +172,7 @@ public class StudentController implements Initializable {
         coursePane.setVisible(false);
         homePane.setVisible(userData.equals("allcourses"));
         EnrollmentsPane.setVisible(userData.equals("Enrollments"));
-        academicRecordsPane.setVisible(userData.equals("AcademmicRecords"));
+        changePasswordPane.setVisible(userData.equals("changePassword"));
         if(userData.equals("Enrollments")){
             displayOrRefreshEnrollmentTable();
         }
@@ -202,12 +240,16 @@ public class StudentController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Alert Box");
                 alert.setHeaderText(null);
-                alert.setContentText("You cannot complete this course");
+                alert.setContentText("You cannot Enroll to this course");
                 alert.showAndWait();
             }
         });
 
+
+
     }
+
+
 
     private String getRealValue(SemesterTypes val) {
         if (val == null) {
@@ -245,9 +287,6 @@ public class StudentController implements Initializable {
         title.getStyleClass().add("title");
 
 
-//        Label desc = new Label(item.getDescription());
-//        desc.getStyleClass().add("desc");
-//        desc.setWrapText(true);
         card.setOnMouseClicked(event -> handleCardClick(course));
         card.getChildren().addAll(title);
         return card;
@@ -261,8 +300,12 @@ public class StudentController implements Initializable {
        courseDescriptionLbl.setText(course.getDescription());
         qualification.setText("Do You have Completed "+ course.getPreRequistName());
         homePane.setVisible(false);
+        noRadioButton.setSelected(false);
+        yesRadioButton.setSelected(false);
+        detailsRegisteringView.setVisible(false);
         coursePane.setVisible(true);
         courseId.setText(course.getCourseId());
+
         // You can add more functionality like opening details, navigating to another page, etc.
     }
 
@@ -357,6 +400,29 @@ public class StudentController implements Initializable {
     }
 
 
+    @FXML
+    public void changePassword(ActionEvent actionEvent) {
+        String resp = userservice.changePassword(new ChangePasswordDto(getStudentObj().getEmail(),currentPassword.getText(),newPassword.getText(),confirmPassword.getText()));
+        if(resp.equals("ok")){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Alert Box");
+            alert.setHeaderText(null);
+            alert.setContentText("Password Changes Successfully");
+            alert.showAndWait();
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Alert Box");
+            alert.setHeaderText(null);
+            alert.setContentText(resp);
+            alert.showAndWait();
+        }
+    }
+
+    public void logout(ActionEvent actionEvent) {
+        new LogOutUtil().logout(actionEvent);
+
+    }
 }
 
 

@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -21,6 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.layout.Pane?>
 <BorderPane prefHeight="476.0" prefWidth="900.0" stylesheets="@../styles/dashboard.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.cmjd.coursework.controller.StudentController">
 
     <!-- Left Sidebar -->
@@ -28,7 +30,10 @@
         <VBox prefWidth="200" styleClass="sidebar">
             <Button onAction="#switchForm" styleClass="menu-btn" text="All Courses" userData="allcourses" />
             <Button onAction="#switchForm" styleClass="menu-btn" text="Enrollments" userData="Enrollments" />
-            <Button onAction="#switchForm" styleClass="menu-btn" text="Academic records" userData="AcademmicRecords" />
+            <Button onAction="#switchForm" styleClass="menu-btn" text="Change Password" userData="changePassword" />
+            <Pane fx:id="spacer" VBox.vgrow="ALWAYS" />
+
+            <Button onAction="#logout" prefHeight="36.0" prefWidth="201.0" styleClass="logout-btn" text="Logout" />
         </VBox>
     </left>
 
@@ -76,9 +81,47 @@
             </AnchorPane>
 
             <!-- Students Section -->
-            <AnchorPane fx:id="academicRecordsPane" styleClass="content-area" visible="false">
+            <AnchorPane fx:id="changePasswordPane" styleClass="content-area" visible="false">
                 <VBox layoutX="20" layoutY="20" spacing="10">
-                    <Label styleClass="section-title" text="Academic records" />
+                    <Label styleClass="section-title" text="Change Password" />
+                    <GridPane hgap="10" prefHeight="137.0" prefWidth="371.0" vgap="10">
+                        <TextField fx:id="studentId" visible="false" />
+                        <Label text="Current Password:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <PasswordField fx:id="currentPassword" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+
+                        <Label text="New Password:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <PasswordField fx:id="newPassword" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+
+                        <Label text="Confirm Password:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <PasswordField fx:id="confirmPassword" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                            <Button onAction="#changePassword" styleClass="add-btn" text="Change Password" />
+
+                        </HBox>
+
+
+                        <columnConstraints>
+                            <ColumnConstraints />
+                            <ColumnConstraints />
+                            <ColumnConstraints />
+                            <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                        </rowConstraints>
+                    </GridPane>
                 </VBox>
             </AnchorPane>
 

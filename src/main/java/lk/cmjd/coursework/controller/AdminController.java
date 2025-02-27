@@ -5,20 +5,34 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import lk.cmjd.coursework.dto.*;
 import lk.cmjd.coursework.service.ServiceFactory;
 import lk.cmjd.coursework.service.custom.*;
 import lk.cmjd.coursework.util.Enums.SemesterTypes;
+import lk.cmjd.coursework.util.HibernateUtil;
+import lk.cmjd.coursework.util.LogOutUtil;
 import lk.cmjd.coursework.util.SemesterUtil;
 import lk.cmjd.coursework.util.WordsConverter;
+import org.hibernate.Session;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdminController {
 
@@ -114,7 +128,7 @@ public class AdminController {
 
 
     @FXML
-    private Label totalCount;
+    private Label enrollmentCount;
 
     @FXML
     private TableColumn<CourseDto, Integer> course_credit_hours_col;
@@ -217,12 +231,27 @@ public class AdminController {
     @FXML
     private Button filterButton;
 
+    @FXML
+    private BarChart<Number, String> enrollmentChart;
+
+    @FXML
+    private CategoryAxis subjectAxis;
+
+    @FXML
+    private NumberAxis studentAxis;
+
     public void initialize() throws Exception {
         // Load departments (example data)
         List<DepartmentDto> departments = departmentService.getAll();
         List<PreRequisiteDto> prerequisites = preRequisiteService.getAll();
 
+        DepartmentDto departmentSelectOption = new DepartmentDto();
+        departmentSelectOption.setName("Select");
+        departments.add(0,departmentSelectOption);
 
+        PreRequisiteDto preRequistDto = new PreRequisiteDto();
+        preRequistDto.setRequisiteName("Select");
+        prerequisites.add(0,preRequistDto);
         // Bind the list to the ComboBox
         department.setItems(FXCollections.observableArrayList(departments));
 
@@ -242,6 +271,8 @@ public class AdminController {
             }
         });
 
+        department.getSelectionModel().selectFirst();
+
         PreRequists.setItems(FXCollections.observableArrayList(prerequisites));
         PreRequists.setCellFactory(param -> new ListCell<PreRequisiteDto>() {
             @Override
@@ -260,10 +291,11 @@ public class AdminController {
         });
 
 
+        PreRequists.getSelectionModel().selectFirst();
 
-        courseCount.setText("15");
-        studentCount.setText("250");
-        totalCount.setText("265");
+        courseCount.setText(String.valueOf(courseService.getAll().size()));
+        studentCount.setText(String.valueOf(studentService.getAll().size()));
+        enrollmentCount.setText(String.valueOf(enrollmentService.getAll().size()));
 
         coursesTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -282,6 +314,33 @@ public class AdminController {
         displayOrRefreshEnrollmentsTable();
         loadCourses();
         loadSemesters();
+        loadEnrollmentData();
+    }
+
+    private void loadEnrollmentData() {
+        XYChart.Series<Number, String> series = new XYChart.Series<>(); // Note: <Number, String>
+        series.setName("Enrollment Data");
+
+        // Database Query
+        List<Object[]> results = enrollmentService.getEnrollmentCountWithCourse();
+
+        for (Object[] row : results) {
+            String subject = (String) row[0];
+            Number count = (Number) row[1];
+            System.out.println(subject + " - " + count); // Debugging
+            series.getData().add(new XYChart.Data<>(count, subject)); // Swap order
+        }
+
+        enrollmentChart.getData().clear();
+        enrollmentChart.getData().add(series);
+
+        // Ensure Y-axis categories update
+        subjectAxis.setCategories(FXCollections.observableArrayList(
+                results.stream().map(row -> (String) row[0]).collect(Collectors.toList())
+        ));
+
+        studentAxis.setAutoRanging(true);
+        studentAxis.setForceZeroInRange(false);
     }
 
     private void loadCourses() throws Exception {
@@ -464,6 +523,7 @@ public class AdminController {
         semester.setText(enrollment.getSemester().name());
         status.setText(enrollment.getStatus().name());
         enrollId.setText(enrollment.getEnrollId());
+        gpa.setText(String.valueOf(enrollment.getGpa()));
         enrollmentsPane.setVisible(false);
         gpaUpatePane.setVisible(true);
     }
@@ -569,7 +629,7 @@ public class AdminController {
     @FXML
     void switchForm(ActionEvent event) {
         String userData = ((Button) event.getSource()).getUserData().toString();
-
+        gpaUpatePane.setVisible(false);
         homePane.setVisible(userData.equals("home"));
         coursesPane.setVisible(userData.equals("courses"));
         studentsPane.setVisible(userData.equals("students"));
@@ -680,6 +740,11 @@ public class AdminController {
 
         }
         return enrollments;
+    }
+
+    @FXML
+    public void logout(ActionEvent actionEvent) {
+        new LogOutUtil().logout(actionEvent);
     }
 }
 

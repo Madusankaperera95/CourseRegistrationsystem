@@ -6,6 +6,7 @@ import lk.cmjd.coursework.util.Enums.SemesterTypes;
 import org.hibernate.Session;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface EnrollmentDao extends SuperDao {
 
@@ -28,5 +29,9 @@ public interface EnrollmentDao extends SuperDao {
     ArrayList<EnrollmentEntity> getEnrollmentsByStudentId(String enrollId,Session session);
 
     ArrayList<EnrollmentEntity> getEnrollmentsForFilter(String courseId,SemesterTypes semesterType,Session session);
+
+    int getEnrolledStudentsPerCourse(String courseID,SemesterTypes semesterType,Session session);
+
+    List<Object[]> getEnrollmentCount(Session session);
 
 }

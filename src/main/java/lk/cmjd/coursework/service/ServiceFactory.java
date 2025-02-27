@@ -32,12 +32,14 @@ public class ServiceFactory {
                 return new DepartmentServiceImpl();
             case PREREQUISITE:
                  return new PreRequisiteServiceImpl();
+            case USER:
+                  return new UserServiceImpl();
             default:
                 return null;
         }
     }
     
     public enum ServiceType {
-        STUDENT, COURSE, ENROLLMENT,DEPARTMENT,LOGIN,PREREQUISITE
+        STUDENT, COURSE, ENROLLMENT,DEPARTMENT,LOGIN,PREREQUISITE,USER
     }
 }

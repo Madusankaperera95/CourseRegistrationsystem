@@ -35,6 +35,22 @@ public class UserEntity {
         this.role = role;
     }
 
+    public UserEntity(int userId, String userName, String userEmail, RoleEntity role, String password) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.password = hashPassword(password);
+        this.role = role;
+    }
+
+    public UserEntity(int userId, String userName, String userEmail, String password) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.password = hashPassword(password);
+
+    }
+
     public UserEntity(String userName, String userEmail, String password, RoleEntity role) {
         this.userName = userName;
         this.userEmail = userEmail;

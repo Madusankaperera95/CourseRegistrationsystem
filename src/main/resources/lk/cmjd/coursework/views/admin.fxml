@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
@@ -13,6 +16,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -26,6 +30,10 @@
             <Button onAction="#switchForm" styleClass="menu-btn" text="Courses" userData="courses" />
             <Button onAction="#switchForm" styleClass="menu-btn" text="Students" userData="students" />
             <Button onAction="#switchForm" styleClass="menu-btn" text="Enrollments" userData="enrollments" />
+
+            <Pane fx:id="spacer" VBox.vgrow="ALWAYS" />
+
+            <Button onAction="#logout" prefHeight="36.0" prefWidth="201.0" styleClass="logout-btn" text="Logout" />
         </VBox>
     </left>
 
@@ -33,31 +41,8 @@
     <center>
         <StackPane fx:id="contentArea">
 
-            <!-- Home Section -->
-            <AnchorPane fx:id="homePane" styleClass="content-area" visible="false">
-                <HBox layoutX="20" layoutY="20" spacing="20">
-                    <!-- Courses Card -->
-                    <AnchorPane styleClass="card">
-                        <Label styleClass="card-title" text="Total Courses" />
-                        <Label fx:id="courseCount" layoutX="50" layoutY="40" styleClass="card-count" text="0" />
-                    </AnchorPane>
-
-                    <!-- Students Card -->
-                    <AnchorPane styleClass="card">
-                        <Label styleClass="card-title" text="Total Students" />
-                        <Label fx:id="studentCount" layoutX="50" layoutY="40" styleClass="card-count" text="0" />
-                    </AnchorPane>
-
-                    <!-- Total Card -->
-                    <AnchorPane styleClass="card">
-                        <Label styleClass="card-title" text="Total Users" />
-                        <Label fx:id="totalCount" layoutX="50" layoutY="40" styleClass="card-count" text="0" />
-                    </AnchorPane>
-                </HBox>
-            </AnchorPane>
-
             <!-- Courses Section -->
-            <AnchorPane fx:id="coursesPane" styleClass="content-area">
+            <AnchorPane fx:id="coursesPane" styleClass="content-area" visible="false">
                 <VBox layoutX="20" layoutY="20" spacing="10">
                     <Label styleClass="section-title" text="Course Management" />
 
@@ -240,53 +225,89 @@
             </AnchorPane>
 
 
-            <AnchorPane fx:id="gpaUpatePane" styleClass="content-area" visible="false">
-            <children>
-               <VBox layoutX="20" layoutY="20" spacing="10">
-                  <children>
-                     <Label styleClass="section-title" text="GPA Update Profile" />
-                      <GridPane hgap="10" vgap="10">
-                          <Label fx:id="enrollId" visible="false" />
-                          <Label text="Student ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                          <Label fx:id="enrollStudentId" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <!-- Home Section -->
+            <AnchorPane fx:id="homePane" styleClass="content-area">
+                <HBox layoutX="20" layoutY="20" spacing="20">
+                    <!-- Courses Card -->
+                    <AnchorPane styleClass="card">
+                        <Label layoutX="40.0" layoutY="32.0" styleClass="card-title" text="Total Courses" />
+                        <Label fx:id="courseCount" layoutX="81.0" layoutY="60.0" styleClass="card-count" text="0" />
+                    </AnchorPane>
+                </HBox>
 
-                          <Label text="CourseId:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                          <Label fx:id="enrollCourseId" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                 <!-- Students Card -->
+                 <AnchorPane layoutX="348.0" layoutY="20.0" styleClass="card">
+                     <Label layoutX="32.0" layoutY="31.0" styleClass="card-title" text="Total Students" />
+                     <Label fx:id="studentCount" layoutX="74.0" layoutY="60.0" styleClass="card-count" text="0" />
+                 </AnchorPane>
 
-                          <Label text="Semester:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                          <Label fx:id="semester" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                 <!-- Total Card -->
+                 <AnchorPane layoutX="696.0" layoutY="20.0" styleClass="card">
+                     <Label layoutX="20.0" layoutY="31.0" styleClass="card-title" text="Total Enrollments" />
+                     <Label fx:id="enrollmentCount" layoutX="73.0" layoutY="51.0" styleClass="card-count" text="0" />
+                 </AnchorPane>
+                <AnchorPane layoutX="41.0" layoutY="195.0" prefHeight="294.0" prefWidth="458.0" styleClass="card">
+                    <children>
+                        <Label layoutX="40.0" layoutY="32.0" styleClass="card-title" text="Student Enrollment" />
+                        <BarChart fx:id="enrollmentChart" layoutX="20.0" layoutY="60.0" prefHeight="200.0" prefWidth="400.0">
+                            <xAxis>
+                                <NumberAxis fx:id="studentAxis" label="Total Students" />
+                            </xAxis>
+                            <yAxis>
+                                <CategoryAxis fx:id="subjectAxis" label="Subjects" />
+                            </yAxis>
+                        </BarChart>
+                    </children>
+                </AnchorPane>
+            </AnchorPane>
 
-                          <Label text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                          <Label fx:id="status" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                          <Label text="GPA:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                          <TextField fx:id="gpa" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <AnchorPane fx:id="gpaUpatePane" prefHeight="400" prefWidth="700" styleClass="content-area" visible="false">
+                <children>
+                    <VBox layoutX="30" layoutY="30" spacing="15">
+                        <children>
+                            <Label styleClass="section-title" text="GPA Update Profile" />
+                        </children>
+                    </VBox>
 
+                    <GridPane hgap="15" layoutX="21.0" layoutY="90.0" prefHeight="250" prefWidth="600" styleClass="card-template" vgap="15">
+                        <Label fx:id="enrollId" visible="false" />
 
-                          <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                              <Button onAction="#updateGpa" styleClass="update-btn" text="Save Changes" />
+                        <Label styleClass="form-label" text="Student ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label fx:id="enrollStudentId" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                          </HBox>
-                          <columnConstraints>
-                              <ColumnConstraints />
-                              <ColumnConstraints />
-                          </columnConstraints>
-                          <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                          </rowConstraints>
-                      </GridPane>
-                  </children>
-               </VBox>
-            </children>
-         </AnchorPane>
+                        <Label styleClass="form-label" text="Course ID:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label fx:id="enrollCourseId" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <Label styleClass="form-label" text="Semester:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Label fx:id="semester" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <Label styleClass="form-label" text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <Label fx:id="status" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <Label styleClass="form-label" text="GPA:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <TextField fx:id="gpa" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                        <HBox spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                            <Button onAction="#updateGpa" styleClass="update-btn" text="Save Changes" />
+                        </HBox>
+
+                        <columnConstraints>
+                            <ColumnConstraints halignment="RIGHT" />
+                            <ColumnConstraints halignment="LEFT" />
+                        </columnConstraints>
+
+                        <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                        </rowConstraints>
+                    </GridPane>
+                </children>
+            </AnchorPane>
         </StackPane>
     </center>
 

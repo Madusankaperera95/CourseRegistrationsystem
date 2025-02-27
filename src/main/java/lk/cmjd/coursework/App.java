@@ -20,7 +20,7 @@ public class App extends Application {
         assert resource != null;
         Parent root = FXMLLoader.load(resource);
         primaryStage.setScene(new Scene(root));
-        primaryStage.setTitle("This is java FX");
+        primaryStage.setTitle("Course Management System");
         primaryStage.show();
     }
 

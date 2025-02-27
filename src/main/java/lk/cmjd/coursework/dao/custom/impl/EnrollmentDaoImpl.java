@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EnrollmentDaoImpl implements EnrollmentDao {
     @Override
@@ -133,5 +134,28 @@ public class EnrollmentDaoImpl implements EnrollmentDao {
                 .list();
 
         return enrollments;
+    }
+
+    @Override
+    public int getEnrolledStudentsPerCourse(String courseID, SemesterTypes semesterType, Session session) {
+        Long enrolledStudents = session.createQuery(
+                        "SELECT COUNT(e) FROM EnrollmentEntity e WHERE e.course.courseId = :courseId AND e.semesterType = :semesterType",
+                        Long.class)
+                .setParameter("courseId", courseID)
+                .setParameter("semesterType", semesterType)
+                .uniqueResult();
+
+        return enrolledStudents != null ? enrolledStudents.intValue() : 0;
+    }
+
+    @Override
+    public List<Object[]> getEnrollmentCount(Session session) {
+        return session.createQuery(
+                "SELECT c.courseName, COUNT(e.course.courseId) FROM CourseEntity c " +
+                        "LEFT JOIN EnrollmentEntity e ON e.course.courseId = c.courseId " +
+                        "WHERE e.semesterType = :semesterType "+
+                        "GROUP BY c.courseName",
+                Object[].class
+        ).setParameter("semesterType",SemesterTypes.FIRSTSEMESTER).getResultList();
     }
 }
