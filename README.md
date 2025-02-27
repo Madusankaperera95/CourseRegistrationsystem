@@ -6,8 +6,8 @@ The Course Registration System (CRS) aims to automate the course registration pr
 ## Prerequisites
 Before you begin, ensure you have met the following requirements:
 
-- Java Development Kit (JDK) 11 or later
-- Apache Maven 3.6 or later
+- Java Development Kit (JDK) 21
+- Apache Maven 3.9.9
 - An IDE (e.g., IntelliJ IDEA, Eclipse, or VS Code)
 
 ## Project Structure
