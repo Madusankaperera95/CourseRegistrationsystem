@@ -1,7 +1,7 @@
-# Java Maven Project
+# Java Course Registration System Project
 
 ## Overview
-This is a Java project managed with [Maven](https://maven.apache.org/). The project follows standard Maven conventions and is structured to support dependency management, build automation, and deployment.
+The Course Registration System (CRS) aims to automate the course registration process at educational institutions. It simplifies academic schedule management for students while providing faculty and administrative staff with an efficient way to maintain and track course and student data. This project is managed with Maven and follows standard conventions to support dependency management, build automation, and deployment.
 
 ## Prerequisites
 Before you begin, ensure you have met the following requirements:
@@ -15,12 +15,26 @@ Before you begin, ensure you have met the following requirements:
 project-root/
 │-- src/
 │   ├── main/
-│   │   ├── java/         # Source code
-│   │   ├── resources/    # Configuration files
-│   ├── test/             # Unit tests
-│-- pom.xml               # Maven configuration file
-│-- .gitignore            # Git ignore file
-│-- README.md             # Project documentation
+│   │   ├── java/                # Source code
+│   │   │   ├── lk/cmjd/coursework/
+│   │   │   │   ├── controller/  # Controllers
+│   │   │   │   ├── dao/         # Data Access Objects
+│   │   │   │   ├── dto/         # Data Transfer Objects
+│   │   │   │   ├── entity/      # Entity models
+│   │   │   │   ├── images/      # Image resources
+│   │   │   │   ├── service/     # Business logic services
+│   │   │   │   ├── styles/      # Styles and CSS
+│   │   │   │   ├── util/        # Utility classes
+│   │   │   │   ├── views/       # UI Views
+│   │   │   │   ├── App.java     # Main application entry
+│   │   │   │   ├── HelloController.java  # Sample Controller
+│   │   │   ├── module-info.java # Module descriptor
+│   │   ├── resources/           # Configuration files
+│   ├── test/                    # Unit tests
+│-- target/                      # Compiled output
+│-- pom.xml                       # Maven configuration file
+│-- .gitignore                    # Git ignore file
+│-- README.md                     # Project documentation
 ```
 
 ## Installation & Setup
@@ -35,24 +49,9 @@ cd project-root
 mvn clean install
 ```
 
-### Run the application
-```sh
-mvn exec:java -Dexec.mainClass="com.example.Main"
-```
 
-## Environment Variables
-Create a `.env` file in the project root and define environment variables:
-```
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=secret
-```
 
-## Running Tests
-To run unit tests, use:
-```sh
-mvn test
-```
+
 
 ## Dependencies
 Dependencies are managed via `pom.xml`. To add a new dependency, update the `<dependencies>` section and run:
@@ -60,15 +59,15 @@ Dependencies are managed via `pom.xml`. To add a new dependency, update the `<de
 mvn clean install
 ```
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### Credetials
+```sh
+Admin Login - email: kumara@yopmail.com
+              pwd: sL@393#A
+Student Login - email: kinara@yopmail.com
+              pwd: 1234
+```
 
-## Contributing
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Submit a pull request.
 
 ## Contact
-For any inquiries, contact [Your Name] at [your.email@example.com].
+For any inquiries, contact [Manoj Perera] at [manojperera095@gmail.com].
 
